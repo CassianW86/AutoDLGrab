@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "AutoDL Grab 本地连接",
+  "description": "用选中的 AutoDL 标签页为本地工作台提供只读市场查询。",
+  "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2sN8N08YsVzCBC/SWbMqPDXpCuDQQ8hkVFdIcpcVC5G6kiHdScIqkcG+Y436V7Zsca20pz2wHEh96Nng/ISLKChD33uQpIgTLvUk8gxkDyD7/MhOqS9Y2xyQ9g4ZGbdbXH1qCRLA3wBdgSeGiVgNgKM2wrSTiRMn9tigq/kP4DBKb9lZ1qoit1WLbe8DOHO1+791yPq2si/u7LAxeVxSZLlA3tKN5b1RHrEHQlQydnDea2M+dCyQgIxFPaOC9zwx33A+lvtuBgPRSIL0cGIQx06jSmCsLjGOa3qmhYVRnyt2wneQg3f8yL2SB4axxZCLrt50tL0E4mNfgqY4AU3V8QIDAQAB",
+  "action": {"default_title": "连接当前 AutoDL 标签页"},
+  "background": {"service_worker": "worker.js"},
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://127.0.0.1/*"]
+}
