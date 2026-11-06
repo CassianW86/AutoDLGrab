@@ -2,14 +2,14 @@
 
 [简体中文](README.md) · English
 
-AutoDL Grab is a local Windows web app that waits for GPUs in the standard AutoDL marketplace. Choose the models you can use, an image, a GPU count per host, and an optional hourly budget. The app checks availability at your interval and stops after creating one pay-as-you-go instance.
+AutoDL Grab is a local web app that waits for GPUs in the standard AutoDL marketplace. Choose the models you can use, an image, a GPU count per host, and an optional hourly budget. The app checks availability at your interval and stops after creating one pay-as-you-go instance.
 
 For example, select RTX 4090 and RTX 5090 and request two GPUs. Either model can match if one host has two free cards of that model, supports the selected image, and meets your price limit. Hosts are checked in marketplace order. The order in which you select the models does not assign a preference.
 
 ## Run on Windows
 
 1. Install Python 3.11 or later. Make sure either `python` or `py` works in your terminal.
-2. Download or clone the repository and double-click `start.bat` in its root directory. On first launch, the script creates a virtual environment and installs dependencies. It uses Microsoft Edge when available and installs Playwright Chromium otherwise.
+2. Download or clone the repository and double-click `start.bat` in its root directory. On first launch, the script creates a virtual environment and installs dependencies. The startup script prepares the browser environment.
 3. The [local dashboard](http://127.0.0.1:8765/) opens in your browser. Keep the startup window running and the computer awake. The dashboard labels are in Chinese.
 
 ## Choose a browser connection
@@ -17,9 +17,9 @@ For example, select RTX 4090 and RTX 5090 and request two GPUs. Either model can
 | Use case | How to connect | Available actions |
 | --- | --- | --- |
 | Rent automatically | Click **打开 AutoDL 登录** and sign in using the dedicated browser window. Keep it open. | Read the market, preview prices, and create one instance |
-| Use an existing Xiaozhi login | Connect the signed-in AutoDL tab through the bundled extension | Read models, images, stock, and quotes |
+| Use an existing browser login | Connect the signed-in AutoDL tab through the bundled extension | Read models, images, stock, and quotes |
 
-**Connect Xiaozhi:** Open `chrome://extensions/`, enable Developer mode, choose **Load unpacked**, and select the repository's `extension` folder. Return to the signed-in `www.autodl.com` tab and click **AutoDL Grab 本地连接** in the extension menu. The dashboard shows **小智已连接 · 只读** when ready. Keep the AutoDL tab and the extension connection page open. Login credentials stay in the browser.
+**Connect through the browser extension:** In a browser that supports Chromium extensions, open the extension manager, enable Developer mode, choose **Load unpacked**, and select the repository's `extension` folder. Return to the signed-in `www.autodl.com` tab and click **AutoDL Grab 本地连接** in the extension menu. When the connection page shows **已连接**, click **读取选项** in the dashboard to query the market. Keep both the AutoDL tab and the extension connection page open while using this connection.
 
 ## Preview and rent
 
