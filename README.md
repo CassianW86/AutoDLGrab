@@ -8,7 +8,7 @@ AutoDL Grab 是一个本地运行的 Web 工具，用来在 AutoDL 普通算力�
 
 ## 在 Windows 上启动
 
-1. 安装 Python 3.11 或更新版本，并确保终端能运行 `python` 或 `py`。
+1. 安装 Python 3.11 或更新版本。启动脚本会验证 `python`、`py`，并查找常见的 Python、Miniconda 和 Anaconda 安装路径，自动跳过 Microsoft Store 占位程序。其他安装位置请加入 `PATH`。
 2. 下载或克隆项目，在仓库根目录双击 `start.bat`。首次运行会创建虚拟环境并安装依赖。启动脚本会准备所需的浏览器环境。
 3. 浏览器会打开[本地工作台](http://127.0.0.1:8765/)。保持启动窗口运行、电脑唤醒。
 

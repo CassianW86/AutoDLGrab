@@ -8,7 +8,7 @@ For example, select RTX 4090 and RTX 5090 and request two GPUs. Either model can
 
 ## Run on Windows
 
-1. Install Python 3.11 or later. Make sure either `python` or `py` works in your terminal.
+1. Install Python 3.11 or later. The launcher validates `python` and `py`, then checks common Python, Miniconda, and Anaconda installation paths, skipping the Microsoft Store placeholder. Add other installation locations to `PATH`.
 2. Download or clone the repository and double-click `start.bat` in its root directory. On first launch, the script creates a virtual environment and installs dependencies. The startup script prepares the browser environment.
 3. The [local dashboard](http://127.0.0.1:8765/) opens in your browser. Keep the startup window running and the computer awake. The dashboard labels are in Chinese.
 
