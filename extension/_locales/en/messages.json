@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "AutoDL Grab local connection"
+  },
+  "extensionDescription": {
+    "message": "Read-only market queries for the local dashboard using the selected AutoDL tab."
+  },
+  "connectTitle": {
+    "message": "Connect the current AutoDL tab"
+  }
+}

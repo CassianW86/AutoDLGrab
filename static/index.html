@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AutoDL Grab · 本地控制台</title><link rel="stylesheet" href="/static/style.css">
-<script defer src="/static/panel.js"></script></head><body>
+<title data-i18n>AutoDL Grab · 本地控制台</title><link rel="stylesheet" href="/static/style.css">
+<script defer src="/static/i18n.js"></script><script defer src="/static/panel.js"></script></head><body>
 <header><div class="brand"><span class="mark" aria-hidden="true">▦</span>AutoDL <b>Grab</b></div>
-<span class="local"><i></i> <span id="connection">本地控制台</span></span></header>
-<main><div class="heading"><div><h1>GPU 抢卡工作台</h1><p>AutoDL 普通算力市场</p></div>
-<button id="login">打开 AutoDL 登录 ↗</button></div>
-<section class="layout"><form id="form" class="card"><div class="title"><h2>租用配置</h2><button type="button" id="load">读取选项 ↻</button></div>
-<fieldset id="gpu"><legend>候选显卡型号（可多选）</legend><div id="models">登录后读取型号</div></fieldset>
-<label>镜像<select required id="image"><option value="">请先选择显卡</option></select></label>
-<div class="pair"><label>同机显卡数量<input type="number" id="count" min="1" step="1" value="1" required></label>
-<label>重试间隔（秒）<input type="number" id="interval" min="1" max="2147483647" step="1" value="30" required></label></div>
-<button hidden type="button" id="save">保存重试间隔</button>
-<label>整机每小时上限（元）<input id="limit" type="number" min="0.001" step="any" placeholder="选填，不限价"></label>
-<div class="actions"><button type="button" id="preview">检查匹配</button><button class="primary" id="start">开始抢卡 →</button></div>
-<small>开始后将自动按量租用一个实例，并产生 AutoDL 费用。</small></form>
-<section class="card status"><div class="title"><h2>任务状态</h2><span id="phase">等待开始</span></div>
-<div class="clock"><span>距离下次检查</span><strong id="timer">—</strong><span id="due">尚未安排</span></div>
-<dl><dt>已尝试</dt><dd id="attempts">0 次</dd><dt>最近结果</dt><dd id="message">等待开始</dd>
-<dt id="orderLabel" hidden>订单标记</dt><dd id="order"></dd>
-<dt id="idLabel" hidden>实例 ID</dt><dd id="instance"></dd></dl>
-<div class="controls"><button id="stop" hidden>停止任务</button><button id="resume" hidden>继续任务</button><button id="resolve" hidden>手动核对</button></div>
-<a href="https://www.autodl.com/console/instance/list" target="_blank" rel="noreferrer">前往我的实例 ↗</a></section></section>
+<span class="local"><i></i> <span id="connection"><span data-i18n>本地控制台</span></span></span><select id="language" aria-label="Language / 语言"><option value="zh-CN">中文</option><option value="en">English</option></select></header>
+<main><div class="heading"><div><h1><span data-i18n>GPU 抢卡工作台</span></h1><p><span data-i18n>AutoDL 普通算力市场</span></p></div>
+<button id="login"><span data-i18n>打开 AutoDL 登录 ↗</span></button></div>
+<section class="layout"><form id="form" class="card"><div class="title"><h2><span data-i18n>租用配置</span></h2><button type="button" id="load"><span data-i18n>读取选项 ↻</span></button></div>
+<fieldset id="gpu"><legend><span data-i18n>候选显卡型号（可多选）</span></legend><div id="models"><span data-i18n>登录后读取型号</span></div></fieldset>
+<label><span data-i18n>镜像</span><select required id="image"><option value="" data-i18n>请先选择显卡</option></select></label>
+<div class="pair"><label><span data-i18n>同机显卡数量</span><input type="number" id="count" min="1" step="1" value="1" required></label>
+<label><span data-i18n>重试间隔（秒）</span><input type="number" id="interval" min="1" max="2147483647" step="1" value="30" required></label></div>
+<button hidden type="button" id="save"><span data-i18n>保存重试间隔</span></button>
+<label><span data-i18n>整机每小时上限（元）</span><input id="limit" type="number" min="0.001" step="any" data-i18n-placeholder="选填，不限价" placeholder="选填，不限价"></label>
+<div class="actions"><button type="button" id="preview"><span data-i18n>检查匹配</span></button><button class="primary" id="start"><span data-i18n>开始抢卡 →</span></button></div>
+<small><span data-i18n>开始后将自动按量租用一个实例，并产生 AutoDL 费用。</span></small></form>
+<section class="card status"><div class="title"><h2><span data-i18n>任务状态</span></h2><span id="phase"><span data-i18n>等待开始</span></span></div>
+<div class="clock"><span><span data-i18n>距离下次检查</span></span><strong id="timer">—</strong><span id="due"><span data-i18n>尚未安排</span></span></div>
+<dl><dt><span data-i18n>已尝试</span></dt><dd id="attempts"><span data-i18n>0 次</span></dd><dt><span data-i18n>最近结果</span></dt><dd id="message"><span data-i18n>等待开始</span></dd>
+<dt id="orderLabel" hidden><span data-i18n>订单标记</span></dt><dd id="order"></dd>
+<dt id="idLabel" hidden><span data-i18n>实例 ID</span></dt><dd id="instance"></dd></dl>
+<div class="controls"><button id="stop" hidden><span data-i18n>停止任务</span></button><button id="resume" hidden><span data-i18n>继续任务</span></button><button id="resolve" hidden><span data-i18n>手动核对</span></button></div>
+<a href="https://www.autodl.com/console/instance/list" target="_blank" rel="noreferrer"><span data-i18n>前往我的实例 ↗</span></a></section></section>
 <p id="feedback" role="status" aria-live="polite"></p></main></body></html>

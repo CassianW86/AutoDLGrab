@@ -101,6 +101,16 @@ async def panel():
     return FileResponse(ROOT / "static/index.html")
 
 
+@app.get("/static/i18n.js")
+async def localization_script():
+    return FileResponse(ROOT / "extension/i18n.js", media_type="text/javascript")
+
+
+@app.get("/static/translations.json")
+async def localization_catalog():
+    return FileResponse(ROOT / "extension/translations.json", media_type="application/json")
+
+
 @app.post("/api/login")
 async def login():
     if app.state.engine.state["phase"] in ("checking", "submitting"):
@@ -139,7 +149,7 @@ async def status():
 @app.post("/api/start")
 async def start(config: Settings):
     if getattr(app.state.market, "bridge", None):
-        raise Pause("小智当前仅用于只读检查。")
+        raise Pause("浏览器扩展当前仅用于只读检查。")
     app.state.engine.start(config.values())
     return app.state.engine.state
 

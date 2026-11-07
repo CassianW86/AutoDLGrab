@@ -115,7 +115,7 @@ class Market:
             result = await self.bridge.call(endpoint, body, account)
         else:
             if not self.page or self.page.is_closed():
-                raise Pause("请打开专用浏览器登录，或从小智的 AutoDL 标签页连接本地扩展。")
+                raise Pause("请打开专用浏览器登录，或从已登录的 AutoDL 标签页连接本地扩展。")
             result = await self.page.evaluate("(" + REQUEST + ")", {"endpoint": endpoint, "body": body, "account": account})
         if result["code"] == "MachineGpuNumUpdateFailed":
             raise SoldOut()

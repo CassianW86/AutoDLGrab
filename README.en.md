@@ -10,7 +10,7 @@ For example, select RTX 4090 and RTX 5090 and request two GPUs. Either model can
 
 1. Install Python 3.11 or later. The launcher validates `python` and `py`, then checks common Python, Miniconda, and Anaconda installation paths, skipping the Microsoft Store placeholder. Add other installation locations to `PATH`.
 2. Download or clone the repository and double-click `start.bat` in its root directory. On first launch, the script creates a virtual environment and installs dependencies. The startup script prepares the browser environment.
-3. The [local dashboard](http://127.0.0.1:8765/) opens in your browser. Keep the startup window running and the computer awake. The dashboard labels are in Chinese.
+3. The [local dashboard](http://127.0.0.1:8765/) opens in your browser. Keep the startup window running and the computer awake. Use the top-right 中文 / English selector to switch languages. The dashboard and extension connection page remember their language separately. AutoDL-provided model and image names keep their original text.
 
 ## Choose a browser connection
 
@@ -41,6 +41,7 @@ The backend uses FastAPI, Playwright, and SQLite. The dashboard uses vanilla Jav
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
+node --test tests/test_i18n.js
 ```
 
 The suite uses a simulated market to test alternative models, single-host GPU counts, image and price constraints, interval changes, cancellation, uncertain order recovery, and the extension's read-only boundary.

@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "AutoDL Grab 本地连接"
+  },
+  "extensionDescription": {
+    "message": "用选中的 AutoDL 标签页为本地工作台提供只读市场查询。"
+  },
+  "connectTitle": {
+    "message": "连接当前 AutoDL 标签页"
+  }
+}

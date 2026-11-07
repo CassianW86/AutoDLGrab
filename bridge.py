@@ -26,9 +26,9 @@ class BrowserBridge:
 
     async def call(self, endpoint, body, account):
         if endpoint not in READ_ONLY:
-            raise Pause("小智当前使用只读连接。")
+            raise Pause("浏览器扩展当前使用只读连接。")
         if not self.online:
-            raise Pause("小智连接已断开，请从 AutoDL 标签页重新点击扩展。")
+            raise Pause("浏览器扩展连接已断开，请从 AutoDL 标签页重新点击扩展。")
         job_id = secrets.token_hex(12)
         future = asyncio.get_running_loop().create_future()
         self.pending[job_id] = future
@@ -36,7 +36,7 @@ class BrowserBridge:
         try:
             return await asyncio.wait_for(future, timeout=23)
         except asyncio.TimeoutError:
-            raise Pause("小智查询超时，请确认两个浏览器标签页均保持打开。") from None
+            raise Pause("浏览器扩展查询超时，请确认两个浏览器标签页均保持打开。") from None
         finally:
             self.pending.pop(job_id, None)
 
