@@ -12,7 +12,21 @@ AutoDL Grab 是一个本地运行的 Web 工具，用来在 AutoDL 普通算力�
 2. 下载或克隆项目，在仓库根目录双击 `start.bat`。首次运行会创建虚拟环境并安装依赖。启动脚本会准备所需的浏览器环境。
 3. 浏览器会打开[本地工作台](http://127.0.0.1:8765/)。保持启动窗口运行、电脑唤醒。
 
-工作台右上角可切换「中文 / English」。工作台与扩展连接页分别记住语言选择；型号和镜像等平台原始名称保留原文。
+## 在 macOS 上启动
+
+1. 安装 Python 3.11 或更新版本。启动脚本会检查 `python3`、`python` 及常见的 Homebrew、Python 官方安装包和 Conda 安装路径。
+2. 下载或克隆项目，在项目目录打开终端并执行：
+
+   ```bash
+   bash start.command
+   ```
+
+   脚本会创建 `.venv`、安装依赖和 Playwright Chromium，然后打开[本地工作台](http://127.0.0.1:8765/)。首次运行需要联网下载依赖和浏览器。
+3. 如需在 Finder 双击启动，先在项目目录执行一次 `chmod +x start.command`，随后双击 `start.command`。保持终端窗口运行、Mac 唤醒。
+
+macOS 使用 Playwright 下载的 Chromium 作为专用登录浏览器，无需安装 Edge。扩展连接方式请使用支持 Chromium 扩展的浏览器。虚拟环境不能跨系统复制；如果项目中已有 Windows 的 `.venv`，请先将其移走，再运行 Mac 启动脚本。macOS 启动支持尚未经实机验证。
+
+两种系统的工作台右上角均可切换「中文 / English」。工作台与扩展连接页分别记住语言选择；型号和镜像等平台原始名称保留原文。
 
 ## 选择登录方式
 
@@ -47,6 +61,8 @@ node --test tests/test_i18n.js
 ```
 
 测试使用模拟市场，覆盖多型号候选、同机卡数、价格和镜像约束、间隔修改、停止、订单超时恢复，以及扩展的只读限制。
+
+macOS 的 Python 测试命令为 `.venv/bin/python -m unittest discover -s tests -v`；双语测试命令相同，需要另外安装 Node.js。
 
 ## 许可证
 

@@ -12,6 +12,22 @@ For example, select RTX 4090 and RTX 5090 and request two GPUs. Either model can
 2. Download or clone the repository and double-click `start.bat` in its root directory. On first launch, the script creates a virtual environment and installs dependencies. The startup script prepares the browser environment.
 3. The [local dashboard](http://127.0.0.1:8765/) opens in your browser. Keep the startup window running and the computer awake. Use the top-right 中文 / English selector to switch languages. The dashboard and extension connection page remember their language separately. AutoDL-provided model and image names keep their original text.
 
+## Run on macOS
+
+1. Install Python 3.11 or later. The launcher checks `python3`, `python`, and common Homebrew, Python.org and Conda installation paths.
+2. Download or clone the project, open Terminal in the project directory, and run:
+
+   ```bash
+   bash start.command
+   ```
+
+   The script creates `.venv`, installs dependencies and Playwright Chromium, then opens the [local dashboard](http://127.0.0.1:8765/). The first launch needs internet access to download dependencies and the browser.
+3. To launch by double-clicking in Finder, first run `chmod +x start.command` in the project directory, then double-click `start.command`. Keep Terminal running and your Mac awake.
+
+macOS uses Playwright's downloaded Chromium for the dedicated login window; Edge is not required. For the extension connection, use a browser that supports Chromium extensions. Virtual environments cannot be copied between operating systems: move any Windows `.venv` elsewhere before running the Mac launcher. macOS startup support has not been tested on a Mac.
+
+The dashboard and extension connection page both offer a 中文 / English selector and remember their language separately.
+
 ## Choose a browser connection
 
 | Use case | How to connect | Available actions |
@@ -45,6 +61,8 @@ node --test tests/test_i18n.js
 ```
 
 The suite uses a simulated market to test alternative models, single-host GPU counts, image and price constraints, interval changes, cancellation, uncertain order recovery, and the extension's read-only boundary.
+
+On macOS, run Python tests with `.venv/bin/python -m unittest discover -s tests -v`. The bilingual test command is the same and requires Node.js to be installed separately.
 
 ## License
 
