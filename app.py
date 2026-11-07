@@ -23,7 +23,12 @@ async def lifespan(app):
     # Keep a second server process from recovering or submitting this account's active task.
     guard = sqlite3.connect(DATA / "worker.lock.db", timeout=0)
     try:
-        guard.execute("BEGIN EXCLUSIVE")
+        try:
+            guard.execute("BEGIN EXCLUSIVE")
+        except sqlite3.OperationalError as error:
+            if "locked" not in str(error).lower():
+                raise
+            raise RuntimeError("另一个 AutoDL Grab 进程正在使用此数据目录，请使用已有工作台。 / Another AutoDL Grab process is using this data directory; use the existing dashboard.") from None
         app.state.market = Market(DATA / "browser")
         app.state.engine = Engine(app.state.market, DATA / "tasks.db")
         app.state.engine.recover()

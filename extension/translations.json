@@ -113,5 +113,6 @@
   "订单待核对：{reason}": "Order needs verification: {reason}",
   "正在核对提交结果：{reason}": "Checking submission result: {reason}",
   "连接未就绪：{reason}。请确认本地服务已启动，再回到 AutoDL 点击扩展图标。": "Connection not ready: {reason}. Make sure the local service is running, then click the extension from AutoDL again.",
-  "我的镜像 / {name}": "My images / {name}"
+  "我的镜像 / {name}": "My images / {name}",
+  "另一个 AutoDL Grab 进程正在使用此数据目录，请使用已有工作台。 / Another AutoDL Grab process is using this data directory; use the existing dashboard.": "Another AutoDL Grab process is using this data directory; use the existing dashboard."
 }
