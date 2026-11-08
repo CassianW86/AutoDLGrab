@@ -78,12 +78,15 @@ class Settings(Interval):
     image: str = Field(pattern="^(base|private):.+$")
     count: int = Field(strict=True, ge=1)
     limit: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    disk: float | None = Field(default=None, gt=0, allow_inf_nan=False)
     account: str = Field(min_length=1)
 
     def values(self):
         values = self.model_dump()
         if self.limit is not None:
             values["limit"] = str(self.limit)
+        if self.disk is not None:
+            values["disk"] = str(self.disk)
         return values
 
 

@@ -13,7 +13,8 @@ from pydantic import ValidationError
 def host(id, idle=2):
     return {"machine_id": id, "gpu_name": "RTX 4090", "gpu_idle_num": idle, "on_line": 1,
             "max_instance_num": 4, "binding_instance_num": 0, "cpu_arch": "x86",
-            "chip_corp": "nvidia", "highest_cuda_version": "12.8"}
+            "chip_corp": "nvidia", "highest_cuda_version": "12.8",
+            "max_data_disk_expand_size": 100 * 1024 ** 3}
 
 
 CONFIG = {"count": 2, "gpu": "RTX 4090", "image": "base:img", "interval": 30, "limit": "5",
@@ -155,12 +156,24 @@ class EngineTest(unittest.IsolatedAsyncioTestCase):
         match = await self.market.candidate({**CONFIG, "gpu": ["delisted", "RTX 5090", "RTX 4090"]})
         self.assertEqual(match["machine"], "compatible")
 
+    async def test_disk_expand_filter(self):
+        self.market.hosts = [{**host("small"), "max_data_disk_expand_size": 50 * 1024 ** 3},
+                             {**host("exact"), "max_data_disk_expand_size": 100 * 1024 ** 3},
+                             host("enough")]
+        self.assertEqual((await self.market.candidate({**CONFIG, "disk": "100"}))["machine"], "exact")
+        self.assertIsNone(await self.market.candidate({**CONFIG, "disk": "100.001"}))
+        self.assertEqual((await self.market.candidate(CONFIG))["machine"], "small")
+
     def test_selection_validation_and_legacy_input(self):
         self.assertEqual(Settings(**CONFIG).gpu, ["RTX 4090"])
         self.assertEqual(Settings(**{**CONFIG, "gpu": ["RTX 4090", "RTX 4090"]}).gpu, ["RTX 4090"])
+        self.assertEqual(Settings(**{**CONFIG, "disk": "100"}).disk, 100.0)
         for invalid in ([], [""], " "):
             with self.assertRaises(ValidationError):
                 Settings(**{**CONFIG, "gpu": invalid})
+        for disk in (0, -1, "NaN"):
+            with self.assertRaises(ValidationError):
+                Settings(**{**CONFIG, "disk": disk})
 
     async def test_sold_at_submission(self):
         self.market.hosts = [host("ready")]
