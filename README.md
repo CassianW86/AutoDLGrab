@@ -2,6 +2,24 @@
 
 简体中文 · [English](README.en.md)
 
+> **本仓库是 [CassianW86/AutoDLGrab](https://github.com/CassianW86/AutoDLGrab) 的二次开发 Fork，命名为 AutoDLGrab-with-Notifier。**
+> 原始代码 © 2026 CassianW86 and AutoDL Grab contributors，采用 [MIT License](LICENSE) 开源。
+> 下方「本 Fork 新增」章节为本仓库维护者（KATare955）的贡献。
+
+## 本 Fork 新增
+
+### 1. 数据盘可扩容下限匹配条件
+租用配置新增「数据盘可扩容下限（GB）」输入框，按主机剩余可扩容数据盘容量过滤候选主机。
+涉及文件：`market.py`、`app.py`、`static/index.html`、`static/panel.js`、`extension/translations.json`、`tests/test_grab.py`
+
+### 2. 抢到卡后播放本地提示音
+实例创建成功时后端自动播放提示音（macOS 优先播放 `asset/抢到卡啦.aiff`，缺失回退系统 Glass 音效；Windows 使用系统提示音），无需保持工作台标签页打开。
+涉及文件：`engine.py`、`app.py`、`asset/抢到卡啦.aiff`
+
+### 3. 兼容性修复
+- Playwright 专用浏览器反检测参数，解决 AutoDL 登录滑块验证码始终失败的问题
+- 工作台静态资源 no-cache，避免改版后浏览器缓存旧页面
+
 AutoDL Grab 是一个本地运行的 Web 工具，用来在 AutoDL 普通算力市场等候空闲 GPU。勾选一种或多种可接受的型号，选定镜像、同机卡数和整机小时预算，工具会按设定间隔检查市场，直到成功创建一个按量计费实例。
 
 例如，同时勾选 RTX 4090 和 RTX 5090，数量填 2。只要其中一种型号在同一台主机上有两张空闲卡，且镜像和价格符合要求，就可以命中。每轮按市场返回的主机顺序匹配，勾选顺序不代表优先级。
