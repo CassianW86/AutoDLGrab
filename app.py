@@ -1,5 +1,7 @@
 import os
 import sqlite3
+import subprocess
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -17,6 +19,21 @@ ROOT = Path(__file__).resolve().parent
 DATA = Path(os.environ.get("AUTODLGRAB_DATA", ROOT / ".local"))
 
 
+def play_success_sound():
+    """Play a local alert sound when an instance has been created."""
+    if sys.platform == "darwin":
+        custom = ROOT / "asset" / "抢到卡啦.aiff"
+        sound = custom if custom.is_file() else Path("/System/Library/Sounds/Glass.aiff")
+        if sound.is_file():
+            # A recorded voice line is played once; the system chime repeats.
+            for _ in range(1 if sound == custom else 3):
+                subprocess.Popen(["afplay", str(sound)],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    elif sys.platform == "win32":
+        import winsound
+        winsound.MessageBeep(winsound.MB_ICONEXCLAMATION)
+
+
 @asynccontextmanager
 async def lifespan(app):
     DATA.mkdir(parents=True, exist_ok=True)
@@ -30,7 +47,7 @@ async def lifespan(app):
                 raise
             raise RuntimeError("另一个 AutoDL Grab 进程正在使用此数据目录，请使用已有工作台。 / Another AutoDL Grab process is using this data directory; use the existing dashboard.") from None
         app.state.market = Market(DATA / "browser")
-        app.state.engine = Engine(app.state.market, DATA / "tasks.db")
+        app.state.engine = Engine(app.state.market, DATA / "tasks.db", on_success=play_success_sound)
         app.state.engine.recover()
         try:
             yield
@@ -124,6 +141,14 @@ async def login():
     if app.state.engine.state["phase"] in ("checking", "submitting"):
         raise Pause("市场操作进行中，请等待本轮完成。")
     await app.state.market.login()
+    return {"ok": True}
+
+
+@app.post("/api/alert")
+async def alert():
+    if app.state.engine.state["phase"] in ("checking", "submitting"):
+        raise Pause("市场操作进行中，请等待本轮完成。")
+    play_success_sound()
     return {"ok": True}
 
 
