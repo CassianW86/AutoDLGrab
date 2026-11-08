@@ -72,7 +72,10 @@ async def same_origin(request: Request, call_next):
                 return JSONResponse({"detail": "仅接受本地 AutoDL 扩展。"}, status_code=403)
         elif request.headers.get("x-grab-panel") != "1" or (origin and origin != str(request.base_url).rstrip("/")):
             return JSONResponse({"detail": "仅接受本地面板操作。"}, status_code=403)
-    return await call_next(request)
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
 
 
 class Interval(BaseModel):

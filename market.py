@@ -91,7 +91,11 @@ class Market:
                              and (Path(root) / "Microsoft/Edge/Application/msedge.exe").is_file()), None)
                 self.context = await self.driver.chromium.launch_persistent_context(
                     str(self.directory), headless=False, no_viewport=True,
-                    executable_path=str(edge) if edge else None)
+                    executable_path=str(edge) if edge else None,
+                    ignore_default_args=["--enable-automation"],
+                    args=["--disable-blink-features=AutomationControlled"])
+                await self.context.add_init_script(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 self.context.on("close", self._closed)
             if not self.page or self.page.is_closed():
                 self.page = self.context.pages[0] if self.context.pages else await self.context.new_page()
