@@ -74,7 +74,8 @@ function config() {
   if (!gpu.length) throw Error(t("请至少选择一种候选显卡。"));
   if (!el("form").reportValidity()) throw Error(t("请填写完整配置。"));
   return {account,gpu,image:el("image").value,count:el("count").valueAsNumber,
-    interval:el("interval").valueAsNumber,limit:el("limit").value === "" ? null : el("limit").valueAsNumber};
+    interval:el("interval").valueAsNumber,limit:el("limit").value === "" ? null : el("limit").valueAsNumber,
+    disk:el("disk").value === "" ? null : el("disk").valueAsNumber};
 }
 action("preview", async () => {
   const {match} = await api("preview", config());
@@ -105,9 +106,10 @@ function render(data) {
     el("interval").value = cfg.interval;
     el("count").value = cfg.count;
     el("limit").value = cfg.limit ?? "";
+    el("disk").value = cfg.disk ?? "";
   }
   lastTask = data.name;
-  for (const id of ["gpu","image","count","limit","load","preview","start"]) el(id).disabled = live || pending;
+  for (const id of ["gpu","image","count","limit","disk","load","preview","start"]) el(id).disabled = live || pending;
   if (data.browser_mode === "readonly" || data.browser_mode === "offline") {
     el("start").disabled = true;
     el("connection").textContent = data.browser_mode === "readonly" ? t("浏览器扩展已连接 · 只读") : t("浏览器扩展已断开");

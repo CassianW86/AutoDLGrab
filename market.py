@@ -33,7 +33,9 @@ def version(value):
     return (int(match[1]), int(match[2] or 0)) if match else None
 
 
-def eligible(host, count, img, series):
+def eligible(host, count, img, series, min_expand_bytes=0):
+    if min_expand_bytes > 0 and int(host.get("max_data_disk_expand_size") or 0) < min_expand_bytes:
+        return False
     if (host["gpu_idle_num"] < count
             or host["on_line"] in (3, 4, 5, 6)
             or host["max_instance_num"] <= host["binding_instance_num"]):
@@ -89,7 +91,11 @@ class Market:
                              and (Path(root) / "Microsoft/Edge/Application/msedge.exe").is_file()), None)
                 self.context = await self.driver.chromium.launch_persistent_context(
                     str(self.directory), headless=False, no_viewport=True,
-                    executable_path=str(edge) if edge else None)
+                    executable_path=str(edge) if edge else None,
+                    ignore_default_args=["--enable-automation"],
+                    args=["--disable-blink-features=AutomationControlled"])
+                await self.context.add_init_script(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 self.context.on("close", self._closed)
             if not self.page or self.page.is_closed():
                 self.page = self.context.pages[0] if self.context.pages else await self.context.new_page()
@@ -151,6 +157,9 @@ class Market:
         account, models = await self.models()
         if account != settings["account"]:
             raise Pause("登录账号已变化。")
+        min_expand = 0
+        if settings.get("disk"):
+            min_expand = int(Decimal(str(settings["disk"])) * 1024 ** 3)
         selected = settings["gpu"]
         names = [name for name in ([selected] if isinstance(selected, str) else selected) if name in models]
         if not names:
@@ -174,7 +183,7 @@ class Market:
             for host in data["list"] or []:
                 name = host["gpu_name"]
                 if name not in images or not eligible(
-                        host, settings["count"], images[name], models[name].get("gpu_series_type")):
+                        host, settings["count"], images[name], models[name].get("gpu_series_type"), min_expand):
                     continue
                 price = price_request(host, settings["count"])
                 quote = (await self.call("order/price/preview", price, account))["data"]

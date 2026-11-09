@@ -15,6 +15,8 @@
   "保存重试间隔": "Save retry interval",
   "整机每小时上限（元）": "Hourly limit per host (CNY)",
   "选填，不限价": "Optional, no price limit",
+  "数据盘可扩容下限（GB）": "Min expandable data disk (GB)",
+  "选填，不限磁盘": "Optional, no disk limit",
   "检查匹配": "Check availability",
   "开始抢卡 →": "Start renting →",
   "开始后将自动按量租用一个实例，并产生 AutoDL 费用。": "Starting will automatically rent one pay-as-you-go instance and incur AutoDL charges.",

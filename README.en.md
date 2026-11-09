@@ -2,6 +2,24 @@
 
 [简体中文](README.md) · English
 
+> **This repository is a fork of [CassianW86/AutoDLGrab](https://github.com/CassianW86/AutoDLGrab) with additional features, named AutoDLGrab-with-Notifier.**
+> Original code © 2026 CassianW86 and AutoDL Grab contributors, released under the [MIT License](LICENSE).
+> The "Added in this fork" section below is contributed by the fork maintainer (KATare955).
+
+## Added in this fork
+
+### 1. Minimum expandable data disk filter
+A new "Min expandable data disk (GB)" field filters candidate hosts by remaining expandable data disk capacity.
+Files: `market.py`, `app.py`, `static/index.html`, `static/panel.js`, `extension/translations.json`, `tests/test_grab.py`
+
+### 2. Success alert sound
+An alert sound plays from the backend when an instance is created (macOS prefers `asset/抢到卡啦.aiff` and falls back to the Glass chime; Windows uses the system beep). No need to keep the dashboard tab open.
+Files: `engine.py`, `app.py`, `asset/抢到卡啦.aiff`
+
+### 3. Compatibility fixes
+- Playwright anti-automation flags for the dedicated browser, fixing repeated slider CAPTCHA failures on the AutoDL login page
+- `Cache-Control: no-cache` for dashboard static assets, preventing stale pages after updates
+
 AutoDL Grab is a local web app that waits for GPUs in the standard AutoDL marketplace. Choose the models you can use, an image, a GPU count per host, and an optional hourly budget. The app checks availability at your interval and stops after creating one pay-as-you-go instance.
 
 For example, select RTX 4090 and RTX 5090 and request two GPUs. Either model can match if one host has two free cards of that model, supports the selected image, and meets your price limit. Hosts are checked in marketplace order. The order in which you select the models does not assign a preference.

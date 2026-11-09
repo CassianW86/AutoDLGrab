@@ -13,6 +13,7 @@
 <label><span data-i18n>重试间隔（秒）</span><input type="number" id="interval" min="1" max="2147483647" step="1" value="30" required></label></div>
 <button hidden type="button" id="save"><span data-i18n>保存重试间隔</span></button>
 <label><span data-i18n>整机每小时上限（元）</span><input id="limit" type="number" min="0.001" step="any" data-i18n-placeholder="选填，不限价" placeholder="选填，不限价"></label>
+<label><span data-i18n>数据盘可扩容下限（GB）</span><input id="disk" type="number" min="0.001" step="any" data-i18n-placeholder="选填，不限磁盘" placeholder="选填，不限磁盘"></label>
 <div class="actions"><button type="button" id="preview"><span data-i18n>检查匹配</span></button><button class="primary" id="start"><span data-i18n>开始抢卡 →</span></button></div>
 <small><span data-i18n>开始后将自动按量租用一个实例，并产生 AutoDL 费用。</span></small></form>
 <section class="card status"><div class="title"><h2><span data-i18n>任务状态</span></h2><span id="phase"><span data-i18n>等待开始</span></span></div>

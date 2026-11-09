@@ -9,9 +9,10 @@ from market import Pause, SoldOut
 
 
 class Engine:
-    def __init__(self, market, database):
+    def __init__(self, market, database, on_success=None):
         self.market = market
         self.db = sqlite3.connect(database)
+        self.on_success = on_success
         self.db.execute("CREATE TABLE IF NOT EXISTS current (id INTEGER PRIMARY KEY, state TEXT NOT NULL)")
         row = self.db.execute("SELECT state FROM current WHERE id=1").fetchone()
         self.state = json.loads(row[0]) if row else {"phase": "idle", "attempts": 0, "message": "等待开始",
@@ -92,6 +93,8 @@ class Engine:
         gpu = self.state.get("matched_gpu")
         self.save(phase="success", instance=uuid, due=None,
                   message=f"已创建 {gpu} 实例，抢卡结束。" if gpu else "已取得实例 ID，抢卡结束。")
+        if self.on_success:
+            self.on_success()
 
     async def run(self):
         try:
