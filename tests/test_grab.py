@@ -3,6 +3,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from unittest.mock import Mock
 
 from engine import Engine
 from market import Market, Pause, SoldOut
@@ -187,6 +188,44 @@ class EngineTest(unittest.IsolatedAsyncioTestCase):
         self.market.outcome = "timeout"
         self.engine.start(CONFIG)
         await self.phase("success")
+        self.assertEqual(len(self.market.requests), 1)
+
+    async def test_sound_failure_keeps_success_and_prevents_resume(self):
+        self.market.hosts = [host("ready")]
+        callback = Mock(side_effect=RuntimeError("Audio unavailable"))
+        self.engine.on_success = callback
+        with self.assertLogs("engine", level="ERROR"):
+            self.engine.start(CONFIG)
+            await self.engine.worker
+        self.assertEqual(self.engine.state["phase"], "success")
+        self.assertEqual(self.engine.state["instance"], "mock-id")
+        callback.assert_called_once_with()
+        with self.assertRaises(Pause):
+            self.engine.resume()
+        self.assertEqual(len(self.market.requests), 1)
+
+        await self.engine.close()
+        self.engine = Engine(self.market, self.file, on_success=callback)
+        self.engine.recover()
+        self.assertEqual(self.engine.state["phase"], "success")
+        self.assertEqual(self.engine.state["instance"], "mock-id")
+        self.assertFalse(self.engine.busy)
+        self.assertEqual(len(self.market.requests), 1)
+        callback.assert_called_once_with()
+
+    async def test_sound_failure_keeps_reconciled_order_successful(self):
+        self.market.hosts = [host("ready")]
+        self.market.outcome = "timeout"
+        callback = Mock(side_effect=RuntimeError("Audio unavailable"))
+        self.engine.on_success = callback
+        with self.assertLogs("engine", level="ERROR"):
+            self.engine.start(CONFIG)
+            await self.engine.worker
+        self.assertEqual(self.engine.state["phase"], "success")
+        self.assertEqual(self.engine.state["instance"], "mock-id")
+        callback.assert_called_once_with()
+        with self.assertRaises(Pause):
+            self.engine.resume()
         self.assertEqual(len(self.market.requests), 1)
 
     async def test_uncertain_submission_survives_restart(self):

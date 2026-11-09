@@ -1,11 +1,14 @@
 """Single event-loop worker. State transitions commit before any paid request."""
 import asyncio
 import json
+import logging
 import sqlite3
 import time
 from uuid import uuid4
 
 from market import Pause, SoldOut
+
+logger = logging.getLogger(__name__)
 
 
 class Engine:
@@ -94,7 +97,10 @@ class Engine:
         self.save(phase="success", instance=uuid, due=None,
                   message=f"已创建 {gpu} 实例，抢卡结束。" if gpu else "已取得实例 ID，抢卡结束。")
         if self.on_success:
-            self.on_success()
+            try:
+                self.on_success()
+            except Exception:
+                logger.exception("Success notification failed for instance %s", uuid)
 
     async def run(self):
         try:
