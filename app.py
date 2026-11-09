@@ -22,7 +22,7 @@ DATA = Path(os.environ.get("AUTODLGRAB_DATA", ROOT / ".local"))
 def play_success_sound():
     """Play a local alert sound when an instance has been created."""
     if sys.platform == "darwin":
-        custom = ROOT / "asset" / "抢到卡啦.aiff"
+        custom = ROOT / "asset" / "success.aiff"
         sound = custom if custom.is_file() else Path("/System/Library/Sounds/Glass.aiff")
         if sound.is_file():
             # A recorded voice line is played once; the system chime repeats.
