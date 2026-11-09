@@ -2,19 +2,17 @@
 
 [简体中文](README.md) · English
 
-> **This repository is a fork of [CassianW86/AutoDLGrab](https://github.com/CassianW86/AutoDLGrab) with additional features, named AutoDLGrab-with-Notifier.**
-> Original code © 2026 CassianW86 and AutoDL Grab contributors, released under the [MIT License](LICENSE).
-> The "Added in this fork" section below is contributed by the fork maintainer (KATare955).
+## Additional features
 
-## Added in this fork
+The data disk filter and success alert sound were contributed by [KATare955](https://github.com/KATare955).
 
 ### 1. Minimum expandable data disk filter
 A new "Min expandable data disk (GB)" field filters candidate hosts by remaining expandable data disk capacity.
 Files: `market.py`, `app.py`, `static/index.html`, `static/panel.js`, `extension/translations.json`, `tests/test_grab.py`
 
 ### 2. Success alert sound
-An alert sound plays from the backend when an instance is created (macOS prefers `asset/抢到卡啦.aiff` and falls back to the Glass chime; Windows uses the system beep). No need to keep the dashboard tab open.
-Files: `engine.py`, `app.py`, `asset/抢到卡啦.aiff`
+An alert sound plays from the backend when an instance is created (macOS prefers `asset/success.aiff` and falls back to the Glass chime; Windows uses the system beep). No need to keep the dashboard tab open.
+Files: `engine.py`, `app.py`, `asset/success.aiff`
 
 ### 3. Compatibility fixes
 - Playwright anti-automation flags for the dedicated browser, fixing repeated slider CAPTCHA failures on the AutoDL login page
