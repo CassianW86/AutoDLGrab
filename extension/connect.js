@@ -1,5 +1,6 @@
 "use strict";
-const allowed = new Set(["machine/gpu_type","image/all","image/private/get","user/machine/list","order/price/preview"]);
+const allowed = new Set(["machine/gpu_type","image/all","image/private/get","user/machine/list","order/price/preview",
+  "common","instance","instance/snapshot"]);
 const message = document.getElementById("message");
 const tabId = Number(location.hash.slice(1));
 let ticket;
@@ -19,7 +20,7 @@ async function run() {
     location.origin === "https://www.autodl.com" && Boolean(localStorage.getItem("token"))});
   if (!checked[0]?.result) throw Error(t("这个标签页还未登录 AutoDL。"));
   ticket = (await local("connect")).ticket;
-  message.textContent = t("已连接。当前仅允许读取型号、镜像、主机和报价。");
+  message.textContent = t("已连接。当前仅允许读取型号、镜像、实例、主机和报价。");
   while (true) {
     const job = await local("next");
     if (!job.id) continue;

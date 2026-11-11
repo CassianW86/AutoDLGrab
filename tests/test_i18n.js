@@ -51,7 +51,7 @@ test("static UI and local application messages have English translations", () =>
       assert.ok(dictionary[text], `${file}: ${text}`);
     }
   }
-  for (const file of ["app.py","bridge.py","engine.py","market.py","extension/request.js"]) {
+  for (const file of ["app.py","bridge.py","engine.py","market.py","extension/request.js","extension/connect.js","static/panel.js"]) {
     const source = fs.readFileSync(path.join(root,file),"utf8");
     assert.ok(!source.includes("小智"),file);
     for (const match of source.matchAll(/["']([^"'\n]*[\u4e00-\u9fff][^"'\n]*)["']/g)) {

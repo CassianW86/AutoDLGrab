@@ -7,8 +7,15 @@
 <main><div class="heading"><div><h1><span data-i18n>GPU 抢卡工作台</span></h1><p><span data-i18n>AutoDL 普通算力市场</span></p></div>
 <button id="login"><span data-i18n>打开 AutoDL 登录 ↗</span></button></div>
 <section class="layout"><form id="form" class="card"><div class="title"><h2><span data-i18n>租用配置</span></h2><button type="button" id="load"><span data-i18n>读取选项 ↻</span></button></div>
+<label><span data-i18n>创建方式</span><select id="mode"><option value="create" data-i18n>新建实例</option><option value="clone" data-i18n>克隆实例</option></select></label>
+<div id="cloneFields" hidden>
+<label><span data-i18n>源实例</span><select id="source"><option value="" data-i18n>登录后读取实例</option></select></label>
+<p id="sourceInfo" class="source-info" role="status"></p>
+<label class="check"><input id="copyDisk" type="checkbox" checked><span data-i18n>同时复制数据盘</span></label>
+<small><span data-i18n>系统盘自动复制，限定同地区抢卡。数据盘按源盘容量自动扩容，扩容费用计入预算。</span></small>
+</div>
 <fieldset id="gpu"><legend><span data-i18n>候选显卡型号（可多选）</span></legend><div id="models"><span data-i18n>登录后读取型号</span></div></fieldset>
-<label><span data-i18n>镜像</span><select required id="image"><option value="" data-i18n>请先选择显卡</option></select></label>
+<label id="imageField"><span data-i18n>镜像</span><select required id="image"><option value="" data-i18n>请先选择显卡</option></select></label>
 <div class="pair"><label><span data-i18n>同机显卡数量</span><input type="number" id="count" min="1" step="1" value="1" required></label>
 <label><span data-i18n>重试间隔（秒）</span><input type="number" id="interval" min="1" max="2147483647" step="1" value="30" required></label></div>
 <button hidden type="button" id="save"><span data-i18n>保存重试间隔</span></button>

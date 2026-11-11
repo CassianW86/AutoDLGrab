@@ -9,7 +9,7 @@ from market import Pause
 
 ORIGIN = "chrome-extension://lhkogmmebfmebikjjojbacjahiilojcf"
 READ_ONLY = {"machine/gpu_type", "image/all", "image/private/get",
-             "user/machine/list", "order/price/preview"}
+             "user/machine/list", "order/price/preview", "common", "instance", "instance/snapshot"}
 router = APIRouter(prefix="/bridge")
 
 
@@ -24,7 +24,7 @@ class BrowserBridge:
     def online(self):
         return time.monotonic() - self.seen < 35
 
-    async def call(self, endpoint, body, account):
+    async def call(self, endpoint, body, account, params=None):
         if endpoint not in READ_ONLY:
             raise Pause("浏览器扩展当前使用只读连接。")
         if not self.online:
@@ -32,7 +32,7 @@ class BrowserBridge:
         job_id = secrets.token_hex(12)
         future = asyncio.get_running_loop().create_future()
         self.pending[job_id] = future
-        self.jobs.put_nowait(dict(id=job_id, endpoint=endpoint, body=body, account=account))
+        self.jobs.put_nowait(dict(id=job_id, endpoint=endpoint, body=body, account=account, params=params))
         try:
             return await asyncio.wait_for(future, timeout=23)
         except asyncio.TimeoutError:

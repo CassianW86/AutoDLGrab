@@ -1,4 +1,4 @@
-async function marketRequest({endpoint, body, account}) {
+async function marketRequest({endpoint, body, account, params}) {
   if (location.origin !== 'https://www.autodl.com') throw Error('请打开 AutoDL 窗口');
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -9,7 +9,9 @@ async function marketRequest({endpoint, body, account}) {
   if (document.querySelector('[id*=captcha]:not(script)')?.getBoundingClientRect().height > 0)
     throw Error('请在专用窗口完成人机验证');
   const prefix = user.sub_name ? '/api/v1/sub_user/' : '/api/v1/';
-  const response = await fetch(prefix + endpoint, {
+  const url = new URL(prefix + endpoint, location.origin);
+  for (const [key, value] of Object.entries(params || {})) url.searchParams.set(key, String(value));
+  const response = await fetch(url, {
     method: body === null ? 'GET' : 'POST', redirect: 'error',
     signal: AbortSignal.timeout(15000),
     headers: {Authorization: token, 'Content-Type': 'application/json',

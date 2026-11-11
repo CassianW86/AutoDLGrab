@@ -49,7 +49,7 @@ The dashboard and extension connection page both offer a 中文 / English select
 | Use case | How to connect | Available actions |
 | --- | --- | --- |
 | Rent automatically | Click **打开 AutoDL 登录** and sign in using the dedicated browser window. Keep it open. | Read the market, preview prices, and create one instance |
-| Use an existing browser login | Connect the signed-in AutoDL tab through the bundled extension | Read models, images, stock, and quotes |
+| Use an existing browser login | Connect the signed-in AutoDL tab through the bundled extension | Read models, images, source instances, stock, and quotes |
 
 **Connect through the browser extension:** In a browser that supports Chromium extensions, open the extension manager, enable Developer mode, choose **Load unpacked**, and select the repository's `extension` folder. Return to the signed-in `www.autodl.com` tab and click **AutoDL Grab 本地连接** in the extension menu. When the connection page shows **已连接**, click **读取选项** in the dashboard to query the market. Keep both the AutoDL tab and the extension connection page open while using this connection.
 
@@ -59,6 +59,16 @@ The dashboard and extension connection page both offer a 中文 / English select
 2. The defaults are one GPU per host and 30 seconds between checks. Enter a positive integer to change the interval. The optional hourly ceiling applies to the entire instance. The app uses the undiscounted one-hour quote for the requested GPU count, so a host that meets the ceiling only after a member discount may be skipped. AutoDL determines the final charge.
 3. Click **检查匹配** for a read-only preview of the matched GPU model, host, and hourly quote. **Clicking 开始抢卡 in dedicated-browser mode authorizes creation of a paid instance.** Open **我的实例** in AutoDL to use it, and shut it down when finished.
 4. The first check runs immediately. Each subsequent wait starts after the preceding check finishes. Use **保存重试间隔** during a task to change the interval. Saving during a countdown restarts that countdown. Saving during a check applies to the next wait. Closing the dashboard tab leaves the local service running.
+
+## One-click clone tasks
+
+1. Select **Clone instance** under **Creation mode**, click **Load options**, and select a source instance. The list shows its name, ID, region and status, with reasons for unavailable sources. The source must be in a shutdown state that supports cloning, have healthy disks, and belong to a region that supports cloning.
+2. Choose GPU models, GPU count, budget and retry interval. The matcher uses AutoDL's region groups to find hosts in the same region and checks architecture and driver compatibility against the source image.
+3. The system disk is copied automatically. **Also copy the data disk** is enabled by default. Expansion is calculated from the source disk capacity and the target host's free disk capacity. Hosts with insufficient expansion capacity are skipped. The minimum expandable data disk filter still applies to the host's available expansion capacity.
+4. Use **Check availability** to preview the region, expansion in GB and quote. The budget includes the undiscounted GPU hourly fee plus 1/24 of the storage daily fee. Expanded data disks incur daily fees while the instance is shut down. AutoDL determines the final charges.
+5. Click **Start renting** to wait for stock and submit a native pay-as-you-go clone order. The source is checked each round and again before submission. Changes that prevent cloning pause the task. **Receiving the target instance ID completes the task and plays the alert sound.** View system and data disk copying progress in AutoDL's instance list.
+
+Clone orders use the same unique-name reconciliation, restart recovery and duplicate-order protection. Simulated-market tests pass. Paid cloning with a real account remains pending integration verification. See the [same-region migration guide](https://www.autodl.com/docs/migrate_instance_2/).
 
 ## Interruptions and order recovery
 
@@ -73,10 +83,10 @@ The backend uses FastAPI, Playwright, and SQLite. The dashboard uses vanilla Jav
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-node --test tests/test_i18n.js
+node --test tests/test_i18n.js tests/test_request.js
 ```
 
-The suite uses a simulated market to test alternative models, single-host GPU counts, image and price constraints, interval changes, cancellation, uncertain order recovery, and the extension's read-only boundary.
+The suite uses a simulated market to test alternative models, single-host GPU counts, image and price constraints, clone regions and disk capacity, interval changes, cancellation, uncertain order recovery, and the extension's read-only boundary. UI tests use an isolated headless browser and require Playwright Chromium or Edge.
 
 On macOS, run Python tests with `.venv/bin/python -m unittest discover -s tests -v`. The bilingual test command is the same and requires Node.js to be installed separately.
 

@@ -6,7 +6,7 @@ import sqlite3
 import time
 from uuid import uuid4
 
-from market import Pause, SoldOut
+from market import Pause, SoldOut, SubmissionRejected
 
 logger = logging.getLogger(__name__)
 
@@ -94,8 +94,11 @@ class Engine:
 
     def success(self, uuid):
         gpu = self.state.get("matched_gpu")
+        message = f"已创建 {gpu} 实例，抢卡结束。" if gpu else "已取得实例 ID，抢卡结束。"
+        if (self.state.get("settings") or {}).get("mode") == "clone":
+            message = "克隆订单已创建，复制进度请到 AutoDL 查看。"
         self.save(phase="success", instance=uuid, due=None,
-                  message=f"已创建 {gpu} 实例，抢卡结束。" if gpu else "已取得实例 ID，抢卡结束。")
+                  message=message)
         if self.on_success:
             try:
                 self.on_success()
@@ -116,6 +119,9 @@ class Engine:
                         uuid = await self.market.submit(self.state["settings"], candidate, self.state["name"])
                     except SoldOut:
                         reason = "提交时该主机库存已变化。"
+                    except SubmissionRejected as error:
+                        self.save(phase="paused", due=None, message=str(error))
+                        return
                     else:
                         self.success(uuid)
                         return

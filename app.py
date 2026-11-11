@@ -4,11 +4,12 @@ import subprocess
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from engine import Engine, safe_reason
@@ -95,11 +96,22 @@ class Settings(Interval):
                 raise ValueError("显卡型号不能为空。")
             return list(dict.fromkeys(item.strip() for item in value))
         return value
-    image: str = Field(pattern="^(base|private):.+$")
+    mode: Literal["create", "clone"] = "create"
+    image: str | None = Field(default=None, pattern="^(base|private):.+$")
+    source_instance_uuid: str | None = Field(default=None, min_length=1)
+    copy_data_disk: bool = Field(default=True, strict=True)
     count: int = Field(strict=True, ge=1)
     limit: float | None = Field(default=None, gt=0, allow_inf_nan=False)
     disk: float | None = Field(default=None, gt=0, allow_inf_nan=False)
     account: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def creation_source(self):
+        if self.mode == "create" and not self.image:
+            raise ValueError("请选择镜像。")
+        if self.mode == "clone" and not (self.source_instance_uuid or "").strip():
+            raise ValueError("请选择源实例。")
+        return self
 
     def values(self):
         values = self.model_dump()
@@ -172,7 +184,13 @@ async def preview(config: Settings):
     if app.state.engine.state["phase"] not in ("idle", "success", "stopped"):
         raise Pause("请先结束当前任务。")
     host = await app.state.market.candidate(config.values())
-    return {"match": host and {key: host[key] for key in ("gpu", "machine", "price")}}
+    return {"match": host and {key: host[key] for key in (
+        "gpu", "machine", "price", "region", "expand_gb", "disk_daily_price")}}
+
+
+@app.get("/api/instances")
+async def instances():
+    return await app.state.market.clone_sources()
 
 
 @app.get("/api/task")
