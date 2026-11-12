@@ -26,8 +26,8 @@ class CloneMarket(SimulatedMarket):
                        "reproduction_id": 0, "expand_data_disk_size": 100 * GIB,
                        "usage_info": {"data_disk_total_size": 150 * GIB}, "ssh_pwd": "secret"}
         self.sources = [self.source]
-        self.regions = [{"region_sign": ["region-A", "region-B"], "region_name": "Same region",
-                         "clone_instance": True}]
+        self.regions = [{"region_sign": sign, "region_name": "Same region", "data_center": "sameDC",
+                         "setting": {"clone_instance": True}} for sign in ("region-A", "region-B")]
         self.snapshot = {"image": {"cpu_arch": "x86", "chip_corp": "nvidia", "cuda_version": "12.4",
                                    "image_type": "private", "image_name": "private-img"},
                          "expand_data_disk_size": 100 * GIB,
@@ -178,14 +178,32 @@ class CloneTest(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(Pause):
                 await self.market.candidate(CLONE_CONFIG)
             self.market.source[key] = original
-        self.market.regions[0]["clone_instance"] = False
+        self.market.regions[0]["setting"]["clone_instance"] = False
         with self.assertRaises(Pause):
             await self.market.candidate(CLONE_CONFIG)
-        self.market.regions[0]["clone_instance"] = True
+        self.market.regions[0]["setting"]["clone_instance"] = True
         self.market.sources = []
         with self.assertRaises(Pause):
             await self.market.candidate(CLONE_CONFIG)
         self.assertFalse(self.market.requests)
+
+    async def test_raw_common_regions_group_by_data_center_and_match_exact_signs(self):
+        self.market.regions.append({"region_sign": "region-A-extra", "region_name": "Other region",
+                                    "data_center": "otherDC", "setting": {"clone_instance": False}})
+        groups = await self.market.clone_regions("test-user")
+        self.assertEqual(groups[0]["region_sign"], ["region-A", "region-B"])
+        self.assertTrue(groups[0]["clone_instance"])
+        self.assertFalse(groups[1]["clone_instance"])
+        self.assertEqual((await self.market.clone_sources())["sources"][0]["reason"], "")
+        self.market.source["region_sign"] = "region"
+        self.assertTrue((await self.market.clone_sources())["sources"][0]["reason"])
+
+    async def test_already_grouped_regions_remain_supported(self):
+        self.market.regions = [{"region_sign": ["region-A", "region-B"], "region_name": "Same region",
+                                "clone_instance": True}]
+        self.assertEqual((await self.market.clone_regions("test-user"))[0]["region_sign"],
+                         ["region-A", "region-B"])
+        self.assertFalse((await self.market.clone_sources())["sources"][0]["reason"])
 
     async def test_revalidation_failure_pauses_without_order_review(self):
         self.market.change_after_quote = True

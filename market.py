@@ -180,9 +180,24 @@ class Market:
                 return
             page += 1
 
+    async def clone_regions(self, account):
+        rows = (await self.call("common", account=account))["data"]["region_list"]
+        groups = {}
+        for row in rows:
+            signs = row["region_sign"]
+            if isinstance(signs, str):
+                signs = [signs]
+            # /common lists physical locations. The console groups them by data center.
+            key = row.get("data_center") or tuple(signs)
+            if key not in groups:
+                groups[key] = {"region_sign": [], "region_name": row["region_name"],
+                               "clone_instance": row.get("setting", row).get("clone_instance", False)}
+            groups[key]["region_sign"].extend(signs)
+        return list(groups.values())
+
     async def clone_sources(self):
         account, _ = await self.models()
-        regions = (await self.call("common", account=account))["data"]["region_list"]
+        regions = await self.clone_regions(account)
         sources = []
         async for row in self.instance_rows(account):
             region = next((r for r in regions if row.get("region_sign") in r["region_sign"]), None)
@@ -202,7 +217,7 @@ class Market:
                 break
         if source is None:
             raise Pause("源实例已释放或当前账号无法访问。")
-        regions = (await self.call("common", account=account))["data"]["region_list"]
+        regions = await self.clone_regions(account)
         region = next((r for r in regions if source.get("region_sign") in r["region_sign"]), None)
         reason = clone_reason(source, region)
         if reason:
